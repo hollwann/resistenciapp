@@ -1,9 +1,11 @@
 <template>
-  <v-container class="full">
+  <v-container fluid class="full" style="padding-top:0px">
+    <AppBar @show-Dialog-Terms="() => (showDialog = true)" />
     <v-row class="full">
       <v-col cols="6">
         <p>
-          Personas marchando en este momento: <b>{{ markers.length }}</b>
+          Personas marchando en este momento:
+          <b>{{ markers.length }}</b>
         </p>
         <p>Los puntos rojos indican presencia de el ESMAD.</p>
         <v-switch v-model="marching" label="¿Estas marchando?"></v-switch>
@@ -19,6 +21,11 @@
           >Sugerencia</v-btn
         >
       </v-col>
+      <v-col align="center" style="margin-top:-7vh">
+        <v-btn color="primary" :to="{ name: 'chatEvents' }"
+          >Reportar un evento</v-btn
+        >
+      </v-col>
       <v-col cols="12">
         <Map :center="[-74.079297, 4.6551322]" :markers="markers" />
       </v-col>
@@ -27,17 +34,18 @@
           href="https://www.instagram.com/4coders.co/"
           class="black--text"
           style="text-decoration: none;"
-          >Desarrollado por
+        >
+          Desarrollado por
           <img
             src="@/components/LogoHorizontal.png"
             style="width:110px"
             href="https://4coders.co"
             align="middle"
           />
-          por un mejor país</a
-        >
-        version 0.1.5</v-col
-      >
+        </a>
+        version 0.1.5
+      </v-col>
+      <v-col cols="6" offset="3">POR UN MEJOR PAÍS</v-col>
     </v-row>
     <DialogTerms v-model="showDialog" @accept="askLocation()" />
     <DialogSuggestion v-model="showDialogSuggestion" />
@@ -48,15 +56,16 @@
 import Map from '@/components/Map.vue'
 import DialogTerms from '@/components/DialogTerms.vue'
 import DialogSuggestion from '@/components/DialogSuggestion.vue'
+import AppBar from '@/components/AppBar.vue'
 import { db, auth } from '@/firebaseConfig.js'
 
 export default {
   name: 'Home',
-
   components: {
     Map,
     DialogTerms,
-    DialogSuggestion
+    DialogSuggestion,
+    AppBar
   },
   data() {
     return {
@@ -65,6 +74,7 @@ export default {
       allowLocation: false,
       showDialog: true,
       showDialogSuggestion: false,
+      showDialogPostComments: false,
       marching: false,
       smad: false,
       lastUpdate: new Date()
