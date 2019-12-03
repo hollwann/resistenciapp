@@ -68,20 +68,7 @@ export const new_comment = functions.https.onCall(async (data, context) => {
   };
   return await addToFIreBase(commentData, "Comments");
 });
-/*
-.exit
-npm run build
-firebase functions:shell
- data = {
-  "comment":20,
-  "location":[ -11.54,45.4 ],
-  "currentStatus":"ajsdh",
-  "photoUrl":"asd"
-}
-new_comment(data)
-
-
-*/
+ 
 
 function addToFIreBase(data: any, collection: any) {
   return new Promise((resolve, reject) => {
