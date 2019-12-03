@@ -6,9 +6,10 @@ admin.initializeApp(functions.config().firebase);
 Error.stackTraceLimit = Infinity;
 
 import * as paro from './paro';
-
+import * as comments from './comments';
 module.exports = {
     ...paro,
+    ...comments,
 }
 
 // // Start writing Firebase Functions

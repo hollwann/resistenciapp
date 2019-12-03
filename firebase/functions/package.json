@@ -13,9 +13,11 @@
     "node": "8"
   },
   "main": "lib/index.js",
-  "dependencies": {
+  "dpendencies": {
+    "@types/ngeohash": "^0.6.2",
     "firebase-admin": "^8.6.0",
-    "firebase-functions": "^3.3.0"
+    "firebase-functions": "^3.3.0",
+    "ngeohash": "^0.6.3"
   },
   "devDependencies": {
     "tslint": "^5.12.0",

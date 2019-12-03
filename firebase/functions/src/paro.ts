@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 const db = admin.firestore();
 
-exports.scheduledFunction =  functions.pubsub.schedule('every 5 minutes').onRun(async (context) => {
+exports.scheduledFunction =  functions.pubsub.schedule('every 10 minutes').onRun(async (context) => {
     const usersToDelete =  await getUsers() as any;
     console.log(usersToDelete.data)
     await deletUser(usersToDelete.data) as any;
@@ -30,7 +30,8 @@ function getUsers() {
 return new Promise((resolve, reject) => {
     const datos = ['']
     const ahora = new Date()
-    const datePass1 = new Date(ahora.getTime()-	1800000)
+ //   const datePass1 = new Date(ahora.getTime()-	1800000)
+    const datePass1 = new Date(ahora.getTime()-	3600000)
     const refUsers = db.collection('users').where("timestamp",'<=',datePass1);
     refUsers.get()
             .then(snapshot => {
@@ -49,3 +50,10 @@ return new Promise((resolve, reject) => {
           });
 })
 }
+
+
+
+
+
+
+
