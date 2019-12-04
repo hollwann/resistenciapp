@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       accessToken:
-        'pk.eyJ1IjoiY2FsZW5kYXBpIiwiYSI6ImNqd3o5ZzNxMjBrd200YWxjYjFnczFmZWUifQ.J6U35576sNSZs79wW2gLyQ', // your access token. Needed if you using Mapbox maps
+        'pk.eyJ1IjoiaG9sbHdhbm4iLCJhIjoiY2p2MXJqZnU5MXg4MjQzcGZpMDZ0OG9sMCJ9.vkMzF9wxLrcvISl-Pz8c7w', // your access token. Needed if you using Mapbox maps
       mapStyle: 'mapbox://styles/mapbox/streets-v11', // your map style
       coordinates: [-74.079297, 4.6551322]
     }
@@ -66,6 +66,6 @@ export default {
 @import 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css';
 .map {
   width: 100%;
-  height: 80vh;
+  height: 60vh;
 }
 </style>

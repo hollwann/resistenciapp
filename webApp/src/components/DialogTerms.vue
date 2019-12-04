@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showDialog" width="300px">
+  <v-dialog v-model="showDialog" width="300px" persistent>
     <v-card class="p-1">
       <v-col cols="6" offset="3" style="padding:0;padding-top:10px">
         <img
