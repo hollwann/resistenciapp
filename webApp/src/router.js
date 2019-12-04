@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Nothing from './views/Nothing.vue'
+import PostComments from './views/PostComments.vue'
 
 Vue.use(Router)
 
@@ -10,12 +11,20 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      props: true
     },
     {
       path: '/nothing',
       name: 'nothing',
       component: Nothing
+    },
+    {
+      path: '/activity',
+      name: 'activity',
+      props: true,
+      component: PostComments,
+      meta: { requiresAuth: true }
     }
   ]
 })

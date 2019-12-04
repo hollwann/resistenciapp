@@ -3,7 +3,7 @@
     <v-card class="p-1">
       <v-col cols="6" offset="3" style="padding:0;padding-top:10px">
         <img
-          src="@/components/Icon.png"
+          src="@/assets/imgs/Icon.png"
           alt="App icon"
           width="150px"
           style="align:right"
@@ -29,9 +29,23 @@
         </v-card-text>
       </v-col>
       <v-card-actions>
-        <v-col>
-          <v-btn @click="$emit('accept')" large color="primary">ACEPTO</v-btn>
-          <v-btn :to="{ name: 'nothing' }" color="error" large>NO ACEPTO</v-btn>
+        <v-col cols="4" offset="1">
+          <v-btn
+            @click="$emit('accept')"
+            large
+            color="primary"
+            class="btnRounded"
+            >ACEPTO</v-btn
+          >
+        </v-col>
+        <v-col cols="6">
+          <v-btn
+            :to="{ name: 'nothing' }"
+            color="error"
+            large
+            class="btnRounded"
+            >NO ACEPTO</v-btn
+          >
         </v-col>
       </v-card-actions>
     </v-card>
@@ -59,4 +73,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.btnRounded {
+  border-radius: 40px;
+}
+</style>

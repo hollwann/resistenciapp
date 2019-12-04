@@ -1,4 +1,5 @@
 module.exports = {
-  transpileDependencies: ['vuetify'],
-  productionSourceMap: false
+  "transpileDependencies": [
+    "vuetify"
+  ]
 }

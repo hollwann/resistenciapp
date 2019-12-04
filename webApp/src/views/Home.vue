@@ -1,48 +1,88 @@
 <template>
-  <v-container class="full">
-    <v-row class="full">
-      <v-alert dismissible color="blue">
-        <p class="title">
-          Debido a la popularidad de la app, se está trabajando en una versión
-          con nuevas funcionalidades que será lanzada para el próximo
-          #ParoNacional 4 de diciembre.
+  <v-container fluid class="full" style="padding-top:0px">
+    <br />
+    <BarNavigation />
+    <v-row justify="center">
+      <v-col cols="7" offset="1" align-self="center">
+        <p class="white--text" style="font-size:20px">
+          ¿Estás marchando?
         </p>
-      </v-alert>
-      <v-col cols="6">
-        <p>
-          Personas marchando en este momento: <b>{{ markers.length }}</b>
+      </v-col>
+      <v-col cols="3" align-self="center">
+        <v-switch v-model="marching" color="blue" inset dark></v-switch>
+      </v-col>
+    </v-row>
+    <v-row justify="center" style="margin-top:-5vh">
+      <v-col cols="7" offset="1" align-self="center">
+        <p class="white--text" style="font-size:20px">
+          ¿Hay ESMAD?:
         </p>
-        <p>Los puntos rojos indican presencia del ESMAD.</p>
-        <v-switch v-model="marching" label="¿Estás marchando?"></v-switch>
-        <v-switch
-          label="¿El ESMAD esta presente?"
-          v-if="marching"
-          v-model="smad"
-        ></v-switch>
       </v-col>
-      <v-col cols="6">
-        <p>¿Tienes alguna sugerencia para la app? envíala aquí.</p>
-        <v-btn color="primary" @click="showDialogSuggestion = true"
-          >Sugerencia</v-btn
-        >
-        <p>Última actualización del mapa: {{ lastUpdate | parseDate }}</p>
+      <v-col cols="3" align-self="center">
+        <v-switch v-model="smad" color="red" inset dark></v-switch>
       </v-col>
-      <v-col cols="12">
-        <Map :center="center" :markers="markers" />
-      </v-col>
-      <v-col cols="6">
-        versión 0.1.8
-        <a
-          href="https://www.instagram.com/4coders.co/"
-          class="black--text"
-          style="text-decoration: none;"
-          >@4coders.co</a
-        ></v-col
+    </v-row>
+    <v-row justify="center" style="margin-top:-2vh">
+      <v-btn color="primary" @click="showDialogSuggestion = true"
+        >Sugerencia</v-btn
       >
       <v-col cols="6">
         <v-btn @click="showDialogDonations = true">Donaciones</v-btn>
       </v-col>
     </v-row>
+    <br />
+    <p
+      class="text-center red--text"
+      style="font-size:15px;margin-top:-2vh;margin-bottom:6vh"
+    >
+      Presiona si estas en peligro
+    </p>
+    <v-row
+      justify="center"
+      class="btnPanic"
+      style="position:absolute;z-index:1;"
+    >
+      <v-progress-circular value="100" color="red" size="100" width="1">
+        <v-progress-circular value="100" color="red" size="90" width="1">
+          <v-btn
+            color="red"
+            x-large
+            fab
+            style="align:center;"
+            @click="showDialogHelpFunction()"
+          >
+          </v-btn>
+        </v-progress-circular>
+      </v-progress-circular>
+    </v-row>
+    <v-row>
+      <Map :center="[-74.079297, 4.6551322]" :markers="markers" />
+    </v-row>
+    <v-row style="position:absolute; bottom:17vh;left:12vw">
+      <v-card color="#333345" style="padding:7px;border-radius:200px">
+        <v-icon color="green">mdi-map-marker</v-icon>
+        <span class="white--text">Marchantes {{ markers.length }}</span>
+        <v-icon color="red">mdi-map-marker</v-icon>
+        <span class="white--text">Presencia del ESMAD</span>
+      </v-card>
+    </v-row>
+    <v-col cols="12">
+      <a
+        href="https://www.instagram.com/4coders.co/"
+        class="white--text"
+        style="text-decoration: none;"
+      >
+        Desarrollado por
+        <img
+          src="@/assets/imgs/LogoHorizontal.png"
+          style="width:110px"
+          href="https://4coders.co"
+          align="middle"
+        />
+
+        version 0.1.5
+      </a>
+    </v-col>
     <DialogTerms v-model="showDialog" @accept="askLocation()" />
     <DialogDonations v-model="showDialogDonations" />
     <DialogSuggestion v-model="showDialogSuggestion" />
@@ -54,16 +94,17 @@ import Map from '@/components/Map.vue'
 import DialogDonations from '@/components/DialogDonations.vue'
 import DialogTerms from '@/components/DialogTerms.vue'
 import DialogSuggestion from '@/components/DialogSuggestion.vue'
+import BarNavigation from '@/components/BarNavigation.vue'
 import { db, auth } from '@/firebaseConfig.js'
 
 export default {
   name: 'Home',
-
   components: {
     Map,
     DialogTerms,
     DialogSuggestion,
-    DialogDonations
+    DialogDonations,
+    BarNavigation
   },
   data() {
     return {
@@ -73,6 +114,7 @@ export default {
       showDialog: true,
       showDialogSuggestion: false,
       showDialogDonations: false,
+      showDialogHelp: false,
       marching: false,
       smad: false,
       lastUpdate: new Date()
@@ -141,6 +183,9 @@ export default {
       const diffMs = now - this.lastUpdate // milliseconds between now & Christmas
       const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000) // minutes
       return diffMins
+    },
+    showDialogHelpFunction() {
+      this.$emit('show-dialog-help')
     }
   },
   filters: {
@@ -164,5 +209,53 @@ export default {
 .full {
   height: 100%;
   widows: 100%;
+}
+@media only screen and (max-width: 374px) {
+  .btnPanic {
+    top: 44vh;
+    left: 40vw;
+  }
+}
+@media only screen and (max-width: 330px) {
+  .btnPanic {
+    top: 51vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 374px) and (max-width: 400px) {
+  .btnPanic {
+    top: 42vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 374px) and (max-width: 400px) and (min-height: 700px) {
+  .btnPanic {
+    top: 33vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 401px) and (max-width: 500px) {
+  .btnPanic {
+    top: 38vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 401px) and (max-width: 500px) and (min-height: 800px) {
+  .btnPanic {
+    top: 33vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 501px) {
+  .btnPanic {
+    top: 30vh;
+    left: 45vw;
+  }
+}
+@media only screen and (min-width: 800px) {
+  .btnPanic {
+    top: 21vh;
+    left: 48vw;
+  }
 }
 </style>
