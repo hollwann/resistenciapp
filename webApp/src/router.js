@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Nothing from './views/Nothing.vue'
 import PostComments from './views/PostComments.vue'
-import FormLogin from './views/FormLogin.vue'
 
 Vue.use(Router)
 
@@ -26,12 +25,6 @@ export default new Router({
       props: true,
       component: PostComments,
       meta: { requiresAuth: true }
-    },
-    {
-      path: '/form-login',
-      name: 'formlogin',
-      component: FormLogin,
-      props: true
     }
   ]
 })

@@ -2,13 +2,8 @@
   <v-card elevation="0" dark color="#333345" style="width:100%; padding:2vh ">
     <v-row>
       <v-col cols="8" align-self="center">
-        <v-card
-          color="#333345"
-          style="border: 2px solid white;
-          border-radius: 12px;"
-          outlined
-        >
-          {{ message.message }}
+        <v-card color="#333345" :style="colorMessage" outlined>
+          <span :class="colorTextMessage">{{ message.message }}</span>
         </v-card>
         <p style="font-size:15px;color:#36a186;" class="text-right">
           Verificado por {{ message.points }}
@@ -84,6 +79,15 @@ export default {
         result = true
       }
       return result
+    },
+    colorMessage() {
+      if (this.message.state == 'help')
+        return 'border: 2px solid red; border-radius: 12px; padding:10px'
+      else return 'border: 2px solid white; border-radius: 12px;padding:10px'
+    },
+    colorTextMessage() {
+      if (this.message.state == 'help') return 'red--text'
+      else return 'white--text'
     }
   },
   methods: {

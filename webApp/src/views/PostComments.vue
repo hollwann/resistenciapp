@@ -142,7 +142,8 @@ export default {
       db.collection('messages').add({
         usersVotes: [auth.currentUser.uid],
         message: this.textMessage,
-        points: 1
+        points: 1,
+        state: 'normal'
       })
       this.textComprube = this.textMessage
       this.messageAlert = 'Mensaje enviado! Gracias.'

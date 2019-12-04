@@ -41,7 +41,14 @@
     >
       <v-progress-circular value="100" color="red" size="100" width="1">
         <v-progress-circular value="100" color="red" size="90" width="1">
-          <v-btn color="red" x-large fab style="align:center;"> </v-btn>
+          <v-btn
+            color="red"
+            x-large
+            fab
+            style="align:center;"
+            @click="showDialogHelpFunction()"
+          >
+          </v-btn>
         </v-progress-circular>
       </v-progress-circular>
     </v-row>
@@ -100,7 +107,7 @@ export default {
       allowLocation: false,
       showDialog: true,
       showDialogSuggestion: false,
-      showDialogPostComments: false,
+      showDialogHelp: false,
       marching: false,
       smad: false,
       lastUpdate: new Date()
@@ -163,6 +170,9 @@ export default {
       const diffMs = now - this.lastUpdate // milliseconds between now & Christmas
       const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000) // minutes
       return diffMins
+    },
+    showDialogHelpFunction() {
+      this.$emit('show-dialog-help')
     }
   }
 }
