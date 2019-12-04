@@ -1,49 +1,55 @@
 <template>
-  <v-card elevation="0" dark>
+  <v-card elevation="0" dark color="#333345" style="width:100%; padding:2vh ">
     <v-row>
-      <v-col
-        align-self="center"
-        cols="4"
-        style="padding-top:0;padding-bottom:0;padding-right:0;"
-      >
-        <v-row justify="center">
-          <v-btn
-            :disabled="!canVote()"
-            rounded
-            color="primary"
-            @click="sumVoteMessage()"
-            small
-          >
-            <v-icon style="padding-right:1vh">mdi-thumb-up</v-icon>
-          </v-btn>
-        </v-row>
-        <br />
-        <v-row justify="center">
-          {{ message.points }}
-        </v-row>
-        <br />
-        <v-row justify="center">
-          <v-btn
-            :disabled="!canVote()"
-            rounded
-            color="red"
-            @click="subVoteMessage()"
-            small
-          >
-            <v-icon style="padding-right:1vh">mdi-thumb-down</v-icon>
-          </v-btn>
-        </v-row>
+      <v-col cols="8" align-self="center">
+        <v-card
+          color="#333345"
+          style="border: 2px solid white;
+          border-radius: 12px;"
+          outlined
+        >
+          {{ message.message }}
+        </v-card>
+        <p style="font-size:15px;color:#36a186;" class="text-right">
+          Verificado por {{ message.points }}
+        </p>
       </v-col>
-      <v-col cols="8">
-        <v-card-text>
-          <p>{{ message.message }}</p>
-        </v-card-text>
+      <v-col cols="2">
+        <v-btn
+          fab
+          dark
+          small
+          color="#333345"
+          outlined
+          :disabled="!canVote"
+          style="border: 2px solid #36a186;
+          border-radius: 30px;"
+          @click="voteMessage(1)"
+        >
+          <v-icon dark color="#36a186">mdi-thumb-up-outline</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="2">
+        <v-btn
+          fab
+          dark
+          small
+          color="#333345"
+          outlined
+          :disabled="!canVote"
+          style="border: 2px solid red;
+          border-radius: 30px;"
+          @click="voteMessage(-1)"
+        >
+          <v-icon dark color="red">mdi-thumb-down-outline</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
+
     <AlertDialog
       :message="messageAlert"
       :dialog="alert"
-      @hideDialog="() => ((alert = false), (messageAlert = ''), goToHome())"
+      @hideDialog="() => ((alert = false), (messageAlert = ''))"
     ></AlertDialog>
   </v-card>
 </template>
@@ -67,49 +73,32 @@ export default {
       required: true
     }
   },
-  methods: {
+  computed: {
     canVote() {
-      let result = true
-      this.message.usersVotes.map(function(item) {
-        if (auth.currentUser.uid == item) {
-          result = false
-        }
-      })
-      console.log(result)
+      let result = this.message.usersVotes.filter(
+        item => auth.currentUser.uid == item
+      )
+      if (result.length == 1) {
+        result = false
+      } else {
+        result = true
+      }
       return result
-    },
-    async sumVoteMessage() {
-      if (this.canVote()) {
+    }
+  },
+  methods: {
+    voteMessage(option) {
+      if (this.canVote) {
         this.message.usersVotes.push(auth.currentUser.uid)
-        await db
-          .collection('messages')
+        db.collection('messages')
           .doc(this.message.id)
           .update({
-            points: this.message.points + 1,
+            points: this.message.points + option,
             usersVotes: this.message.usersVotes
           })
         this.messageAlert = 'Gracias por contribuir.'
         this.alert = true
       }
-    },
-    async subVoteMessage() {
-      if (this.canVote()) {
-        this.message.usersVotes.push(auth.currentUser.uid)
-        await db
-          .collection('messages')
-          .doc(this.message.id)
-          .update({
-            points: this.message.points - 1,
-            usersVotes: this.message.usersVotes
-          })
-        this.messageAlert = 'Gracias por contribuir.'
-        this.alert = true
-      }
-    },
-    goToHome() {
-      this.$router.push({
-        name: 'home'
-      })
     }
   }
 }

@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       accessToken:
-        'pk.eyJ1IjoiY2FsZW5kYXBpIiwiYSI6ImNqd3o5ZzNxMjBrd200YWxjYjFnczFmZWUifQ.J6U35576sNSZs79wW2gLyQ', // your access token. Needed if you using Mapbox maps
+        'pk.eyJ1IjoiYWx2YXJvLTRjb2RlcnMiLCJhIjoiY2szcWU1a2FuMDBxOTNpcHN2aGFrMDcycSJ9.Ik8TWzK12Vij9bZnG5izgA', // your access token. Needed if you using Mapbox maps
       mapStyle: 'mapbox://styles/mapbox/streets-v11', // your map style
       coordinates: [-74.079297, 4.6551322]
     }

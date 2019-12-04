@@ -1,46 +1,92 @@
 <template>
-  <v-container fluid style="padding-top:0 ">
-    <v-row style="max-height:100vh">
-      <v-card dark>
-        <v-col cols="12">
-          <v-col cols="6" offset="3">
-            Eventos actuales
-          </v-col>
-
-          <v-divider></v-divider>
-          <v-row>
-            <v-col cols="12"
-              ><v-textarea
-                rows="1"
-                outlined
-                auto-grow
-                rounded
-                solo
-                v-model="textMessage"
-              ></v-textarea
-            ></v-col>
-            <v-col cols="4" offset="1" style="margin-top:-5vh">
-              <v-btn :to="{ name: 'home' }" color="error" large>Cancelar</v-btn>
-            </v-col>
-            <v-col cols="4" offset="1" style="margin-top:-5vh">
-              <v-btn large color="primary" @click="sendMessage()"
-                >Enviar
-                <v-icon style="margin-left:1vh">mdi-send-circle</v-icon></v-btn
-              >
-            </v-col>
-          </v-row>
-          <v-col cols="12" v-for="item in allMessagesArray" :key="item.id">
-            <cardTextMessage :message="item" />
-            <v-divider class="divider"></v-divider>
-          </v-col>
-        </v-col>
+  <v-container fluid class="full" style="padding-top:0px">
+    <br />
+    <BarNavigation />
+    <v-row>
+      <v-card dark style="width:100%" color="#22222e">
+        <span class="white--text" style="font-size:20px;margin:1vh">
+          ¿Que estás observando?
+        </span>
+        <v-checkbox
+          color="blue"
+          label="Abuso de autoridad"
+          dark
+          v-model="abuse"
+          style="margin-left:2vh"
+          :disabled="vandalism || tranquility"
+        ></v-checkbox>
+        <v-checkbox
+          color="blue"
+          v-model="unrest"
+          label="Disturbios"
+          dark
+          style="margin-left:2vh;margin-top:-3vh"
+          :disabled="tranquility"
+        ></v-checkbox>
+        <v-checkbox
+          color="blue"
+          v-model="vandalism"
+          label="Vandalismo"
+          dark
+          style="margin-left:2vh;margin-top:-3vh"
+          :disabled="abuse || tranquility"
+        ></v-checkbox>
+        <v-checkbox
+          color="blue"
+          v-model="tranquility"
+          label="Tranquilidad"
+          dark
+          style="margin-left:2vh;margin-top:-3vh"
+          :disabled="abuse || unrest || vandalism"
+        ></v-checkbox>
       </v-card>
-      <AlertDialog
-        :message="messageAlert"
-        :dialog="alert"
-        @hideDialog="() => ((alert = false), (messageAlert = ''), goToHome())"
-      ></AlertDialog>
     </v-row>
+
+    <h2 class="white--text" style="margin-top:1vh">
+      Comentarios :
+    </h2>
+    <v-row justify="center">
+      <v-btn
+        rounded
+        style="font-size:15px;padding-top:1vh; "
+        @click="showDialog = true"
+      >
+        Añade un nuevo comentario
+      </v-btn>
+    </v-row>
+    <v-row v-for="item in allMessagesArray" :key="item.id">
+      <cardTextMessage :message="item" />
+    </v-row>
+
+    <v-dialog v-model="showDialog">
+      <v-card dark style="border-radius:20px">
+        <p style="margin:3vh">Describe el evento:</p>
+        <v-textarea
+          rows="1"
+          outlined
+          rounded
+          v-model="textMessage"
+        ></v-textarea>
+        <v-row style="margin-top:2vh">
+          <v-col cols="4" offset="1" style="margin-top:-5vh">
+            <v-btn @click="showDialog = false" color="error" large
+              >Cancelar</v-btn
+            >
+          </v-col>
+          <v-col cols="4" offset="1" style="margin-top:-5vh">
+            <v-btn large color="primary" @click="sendMessage()"
+              >Enviar
+              <v-icon style="margin-left:1vh">mdi-send-circle</v-icon></v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <AlertDialog
+      :message="messageAlert"
+      :dialog="alert"
+      @hideDialog="() => ((alert = false), (messageAlert = ''))"
+    ></AlertDialog>
   </v-container>
 </template>
 
@@ -48,47 +94,44 @@
 import { db, auth } from '@/firebaseConfig.js'
 import AlertDialog from '@/components/AlertDialog.vue'
 import cardTextMessage from '@/components/cardTextMessage.vue'
-const getAllMessages = (to, next) => {
-  let arrayMessages = []
-  db.collection('messages')
-    .get()
-    .then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
+import BarNavigation from '@/components/BarNavigation.vue'
+
+export default {
+  components: {
+    AlertDialog,
+    cardTextMessage,
+    BarNavigation
+  },
+  created() {
+    db.collection('messages').onSnapshot(querySnapshot => {
+      let arrayMessages = []
+      querySnapshot.forEach(doc => {
         let data = doc.data()
         data.id = doc.id
         arrayMessages.push(data)
       })
-      to.params.allMessagesArray = arrayMessages
-      to.params.allMessagesArray.sort(function(a, b) {
+      arrayMessages.sort(function(a, b) {
         return b.points - a.points
       })
-      console.log(to.params.allMessagesArray)
-      next()
+      this.allMessagesArray = arrayMessages
+      console.log(this.allMessagesArray)
     })
-}
-export default {
-  components: {
-    AlertDialog,
-    cardTextMessage
   },
-  beforeRouteEnter(to, from, next) {
-    getAllMessages(to, next)
-  },
-  props: {
-    allMessagesArray: {
-      type: Array,
-      required: true
-    }
-  },
+
   data() {
     return {
       textMessage: '',
       textComprube: '',
       messageAlert: '',
-      alert: false
+      showDialog: false,
+      alert: false,
+      abuse: false,
+      unrest: false,
+      vandalism: false,
+      tranquility: false,
+      allMessagesArray: []
     }
   },
-
   methods: {
     sendMessage() {
       if (this.textMessage.length < 10) {
@@ -105,13 +148,11 @@ export default {
       this.messageAlert = 'Mensaje enviado! Gracias.'
       this.alert = true
       this.textMessage = ''
-    },
-    goToHome() {
-      if (this.textComprube.length > 10) {
-        this.$router.push({
-          name: 'home'
-        })
-      }
+      this.showDialog = false
+      this.abuse = false
+      this.unrest = false
+      this.vandalism = false
+      this.tranquility = false
     }
   }
 }

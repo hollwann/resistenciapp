@@ -1,52 +1,78 @@
 <template>
   <v-container fluid class="full" style="padding-top:0px">
-    <AppBar @show-Dialog-Terms="() => (showDialog = true)" />
-    <v-row class="full">
-      <v-col cols="6">
-        <p>
-          Personas marchando en este momento:
-          <b>{{ markers.length }}</b>
+    <br />
+    <BarNavigation />
+    <v-row justify="center">
+      <v-col cols="7" offset="1" align-self="center">
+        <p class="white--text" style="font-size:20px">
+          ¿Estás marchando?
         </p>
-        <p>Los puntos rojos indican presencia de el ESMAD.</p>
-        <v-switch v-model="marching" label="¿Estas marchando?"></v-switch>
-        <v-switch
-          label="¿El ESMAD esta presente?"
-          v-if="marching"
-          v-model="smad"
-        ></v-switch>
       </v-col>
-      <v-col cols="6">
-        <p>¿Tienes alguna sugerencia para la app? enviala aqui.</p>
-        <v-btn color="primary" @click="showDialogSuggestion = true"
-          >Sugerencia</v-btn
-        >
+      <v-col cols="3" align-self="center">
+        <v-switch v-model="marching" color="blue" inset dark></v-switch>
       </v-col>
-      <v-col align="center" style="margin-top:-7vh">
-        <v-btn color="primary" :to="{ name: 'chatEvents' }"
-          >Reportar un evento</v-btn
-        >
-      </v-col>
-      <v-col cols="12">
-        <Map :center="[-74.079297, 4.6551322]" :markers="markers" />
-      </v-col>
-      <v-col cols="12">
-        <a
-          href="https://www.instagram.com/4coders.co/"
-          class="black--text"
-          style="text-decoration: none;"
-        >
-          Desarrollado por
-          <img
-            src="@/components/LogoHorizontal.png"
-            style="width:110px"
-            href="https://4coders.co"
-            align="middle"
-          />
-        </a>
-        version 0.1.5
-      </v-col>
-      <v-col cols="6" offset="3">POR UN MEJOR PAÍS</v-col>
     </v-row>
+    <v-row justify="center" style="margin-top:-5vh">
+      <v-col cols="7" offset="1" align-self="center">
+        <p class="white--text" style="font-size:20px">
+          ¿Hay ESMAD?:
+        </p>
+      </v-col>
+      <v-col cols="3" align-self="center">
+        <v-switch v-model="smad" color="red" inset dark></v-switch>
+      </v-col>
+    </v-row>
+    <v-row justify="center" style="margin-top:-2vh">
+      <v-btn color="primary" @click="showDialogSuggestion = true"
+        >Sugerencia</v-btn
+      >
+    </v-row>
+    <br />
+    <p
+      class="text-center red--text"
+      style="font-size:15px;margin-top:-2vh;margin-bottom:6vh"
+    >
+      Presiona si estas en peligro
+    </p>
+    <v-row
+      justify="center"
+      class="btnPanic"
+      style="position:absolute;z-index:1;"
+    >
+      <v-progress-circular value="100" color="red" size="100" width="1">
+        <v-progress-circular value="100" color="red" size="90" width="1">
+          <v-btn color="red" x-large fab style="align:center;"> </v-btn>
+        </v-progress-circular>
+      </v-progress-circular>
+    </v-row>
+    <v-row>
+      <Map :center="[-74.079297, 4.6551322]" :markers="markers" />
+    </v-row>
+    <v-row style="position:absolute; bottom:17vh;left:12vw">
+      <v-card color="#333345" style="padding:7px;border-radius:200px">
+        <v-icon color="green">mdi-map-marker</v-icon>
+        <span class="white--text">Marchantes {{ markers.length }}</span>
+        <v-icon color="red">mdi-map-marker</v-icon>
+        <span class="white--text">Presencia del ESMAD</span>
+      </v-card>
+    </v-row>
+    <v-col cols="12">
+      <a
+        href="https://www.instagram.com/4coders.co/"
+        class="white--text"
+        style="text-decoration: none;"
+      >
+        Desarrollado por
+        <img
+          src="@/assets/imgs/LogoHorizontal.png"
+          style="width:110px"
+          href="https://4coders.co"
+          align="middle"
+        />
+
+        version 0.1.5
+      </a>
+    </v-col>
     <DialogTerms v-model="showDialog" @accept="askLocation()" />
     <DialogSuggestion v-model="showDialogSuggestion" />
   </v-container>
@@ -56,7 +82,7 @@
 import Map from '@/components/Map.vue'
 import DialogTerms from '@/components/DialogTerms.vue'
 import DialogSuggestion from '@/components/DialogSuggestion.vue'
-import AppBar from '@/components/AppBar.vue'
+import BarNavigation from '@/components/BarNavigation.vue'
 import { db, auth } from '@/firebaseConfig.js'
 
 export default {
@@ -65,7 +91,7 @@ export default {
     Map,
     DialogTerms,
     DialogSuggestion,
-    AppBar
+    BarNavigation
   },
   data() {
     return {
@@ -146,5 +172,53 @@ export default {
 .full {
   height: 100%;
   widows: 100%;
+}
+@media only screen and (max-width: 374px) {
+  .btnPanic {
+    top: 44vh;
+    left: 40vw;
+  }
+}
+@media only screen and (max-width: 330px) {
+  .btnPanic {
+    top: 51vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 374px) and (max-width: 400px) {
+  .btnPanic {
+    top: 42vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 374px) and (max-width: 400px) and (min-height: 700px) {
+  .btnPanic {
+    top: 33vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 401px) and (max-width: 500px) {
+  .btnPanic {
+    top: 38vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 401px) and (max-width: 500px) and (min-height: 800px) {
+  .btnPanic {
+    top: 33vh;
+    left: 40vw;
+  }
+}
+@media only screen and (min-width: 501px) {
+  .btnPanic {
+    top: 30vh;
+    left: 45vw;
+  }
+}
+@media only screen and (min-width: 800px) {
+  .btnPanic {
+    top: 21vh;
+    left: 48vw;
+  }
 }
 </style>
