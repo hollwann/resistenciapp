@@ -2,6 +2,9 @@
   <v-card elevation="0" dark color="#333345" style="width:100%; padding:2vh ">
     <v-row>
       <v-col cols="8" align-self="center">
+        <p style="font-size:15px;color:gray;" class="text-left">
+          {{ message.date ? dateMessage : 'Diciembre 4' }}
+        </p>
         <v-card color="#333345" :style="colorMessage" outlined>
           <span :class="colorTextMessage">{{ message.message }}</span>
         </v-card>
@@ -88,6 +91,23 @@ export default {
     colorTextMessage() {
       if (this.message.state == 'help') return 'red--text'
       else return 'white--text'
+    },
+    dateMessage() {
+      var options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour12: 'false',
+        hour: 'numeric',
+        minute: 'numeric'
+      }
+      let dateMessage = new Date(
+        this.message.date.seconds * 1000 +
+          this.message.date.nanoseconds * (1 / 1000000)
+      ).toLocaleString('es-ES', options)
+
+      return dateMessage
     }
   },
   methods: {

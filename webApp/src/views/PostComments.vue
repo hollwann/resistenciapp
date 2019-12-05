@@ -143,7 +143,8 @@ export default {
         usersVotes: [auth.currentUser.uid],
         message: this.textMessage,
         points: 1,
-        state: 'normal'
+        state: 'normal',
+        date: new Date()
       })
       this.textComprube = this.textMessage
       this.messageAlert = 'Mensaje enviado! Gracias.'
