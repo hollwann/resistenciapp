@@ -55,33 +55,15 @@
       </v-btn>
     </v-row>
     <v-row v-for="item in allMessagesArray" :key="item.id">
-      <cardTextMessage :message="item" />
+      <cardTextMessage
+        v-if="item.date ? checkDate(item.date) : false"
+        :message="item"
+      />
     </v-row>
-
-    <v-dialog v-model="showDialog">
-      <v-card dark style="border-radius:20px">
-        <p style="margin:3vh">Describe el evento:</p>
-        <v-textarea
-          rows="1"
-          outlined
-          rounded
-          v-model="textMessage"
-        ></v-textarea>
-        <v-row style="margin-top:2vh">
-          <v-col cols="4" offset="1" style="margin-top:-5vh">
-            <v-btn @click="showDialog = false" color="error" large
-              >Cancelar</v-btn
-            >
-          </v-col>
-          <v-col cols="4" offset="1" style="margin-top:-5vh">
-            <v-btn large color="primary" @click="sendMessage()"
-              >Enviar
-              <v-icon style="margin-left:1vh">mdi-send-circle</v-icon></v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-dialog>
+    <DialogPostComment
+      :showDialog="showDialog"
+      @hide-dialog-post-comment="() => reset()"
+    />
     <AlertDialog
       :message="messageAlert"
       :dialog="alert"
@@ -91,16 +73,18 @@
 </template>
 
 <script>
-import { db, auth } from '@/firebaseConfig.js'
+import { db } from '@/firebaseConfig.js'
 import AlertDialog from '@/components/AlertDialog.vue'
 import cardTextMessage from '@/components/cardTextMessage.vue'
 import BarNavigation from '@/components/BarNavigation.vue'
+import DialogPostComment from '@/components/DialogPostComment.vue'
 
 export default {
   components: {
     AlertDialog,
     cardTextMessage,
-    BarNavigation
+    BarNavigation,
+    DialogPostComment
   },
   created() {
     db.collection('messages').onSnapshot(querySnapshot => {
@@ -120,8 +104,6 @@ export default {
 
   data() {
     return {
-      textMessage: '',
-      textComprube: '',
       messageAlert: '',
       showDialog: false,
       alert: false,
@@ -133,28 +115,22 @@ export default {
     }
   },
   methods: {
-    sendMessage() {
-      if (this.textMessage.length < 10) {
-        this.messageAlert = 'Por favor escribe un mensaje mas detallado.'
-        this.alert = true
-        return
-      }
-      db.collection('messages').add({
-        usersVotes: [auth.currentUser.uid],
-        message: this.textMessage,
-        points: 1,
-        state: 'normal',
-        date: new Date()
-      })
-      this.textComprube = this.textMessage
-      this.messageAlert = 'Mensaje enviado! Gracias.'
-      this.alert = true
-      this.textMessage = ''
+    reset() {
       this.showDialog = false
       this.abuse = false
       this.unrest = false
       this.vandalism = false
       this.tranquility = false
+    },
+    checkDate(date) {
+      let dateMessage = new Date(
+        date.seconds * 1000 + date.nanoseconds * (1 / 1000000)
+      )
+        .toString()
+        .substring(0, 15)
+      let dateNow = new Date().toString().substring(0, 15)
+      if (dateMessage == dateNow) return true
+      else false
     }
   }
 }

@@ -1,10 +1,18 @@
 <template>
   <v-card elevation="0" dark color="#333345" style="width:100%; padding:2vh ">
     <v-row>
-      <v-col cols="8" align-self="center">
+      <v-col cols="12" align-self="center">
         <p style="font-size:15px;color:gray;" class="text-left">
           {{ message.date ? dateMessage : '' }}
         </p>
+        <img
+          v-if="this.message.photos != ''"
+          class="white--text "
+          :src="this.message.photos"
+          style="object-fit:cover"
+        />
+      </v-col>
+      <v-col cols="8">
         <v-card color="#333345" :style="colorMessage" outlined>
           <span :class="colorTextMessage">{{ message.message }}</span>
         </v-card>
