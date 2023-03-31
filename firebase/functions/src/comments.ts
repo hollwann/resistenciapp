@@ -69,7 +69,9 @@ export const new_comment = functions.https.onCall(async (data, context) => {
 export const update_location = functions.https.onCall(async (data, context) => {
   const user_uid = context.auth ? context.auth.uid : ''
   if (user_uid === '') {
-    return { res: '400', msg:'Usuario no existe'}
+    const uid_ = context.auth.uid || null;
+    console.error('[Update location] There was an error with uid:', uid_);
+    throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.')
   }
   let location: GeoPoint;
   let geohash: String;
